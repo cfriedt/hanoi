@@ -12,7 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.5', '3.6', '3.7', '3.8']
+        #python-version: ['3.5', '3.6', '3.7', '3.8']
+        python-version: ['3.8']
 
     steps:
     - uses: actions/checkout@v2
@@ -27,7 +28,7 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Lint with flake8
       env:
-        PYTHONPATH: ${GITHUB_WORKSPACE}/src
+        PYTHONPATH: $GITHUB_WORKSPACE/src
       run: |
         # stop the build if there are Python syntax errors or undefined names
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
