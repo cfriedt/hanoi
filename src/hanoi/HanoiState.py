@@ -46,6 +46,11 @@ This class itself does not have methods, so it's more like a data aggregate.
 To operate on a HanoiState instance, use the Hanoi Class. 
 '''
 
+from threading import Lock
+
+counterLock = Lock()
+counter = 0
+
 
 class HanoiState(object):
 
@@ -56,11 +61,12 @@ class HanoiState(object):
         source, other towers are empty, and the number of
         moves is set to 0.
 
-        Keyword arguments:
-        numberOfDiscs -- the number of discs in the game
-        source -- the tower from which discs should be moved
-        target -- the tower to which discs should be moved
+        :param numberOfDiscs: the number of discs in the game
+        :param source: the tower from which discs should be moved
+        :param target: the tower to which discs should be moved
         '''
+
+        global counter
 
         # check arguments
         if numberOfDiscs <= 0 or numberOfDiscs > 64:
@@ -73,9 +79,26 @@ class HanoiState(object):
         if source == target:
             raise ValueError('source may not equal target')
 
+        counterLock.acquire()
+        self.id = counter
+        counter += 1
+        counterLock.release()
+
         self.numberOfDiscs = numberOfDiscs
         self.tower = [0, 0, 0]
         self.tower[source] = (1 << numberOfDiscs) - 1
         self.source = source
         self.target = target
         self.numberOfMoves = 0
+
+    def to_json(self):
+        s = ''
+        s += '{'
+        s += '"sessionId": {}'.format(self.id) + ', '
+        s += '"numberOfDiscs": {}'.format(self.numberOfDiscs) + ', '
+        s += '"fromTower": {}'.format(self.source) + ', '
+        s += '"toTower": {}'.format(self.target) + ', '
+        s += '"numberOfMoves": {}'.format(self.numberOfMoves) + ', '
+        s += '"towers": {}'.format(self.tower)
+        s += '}'
+        return s

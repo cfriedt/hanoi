@@ -1,0 +1,230 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Towers of Hanoi
+  license:
+    name: MIT
+servers:
+  - url: 'http://localhost:8080/v1'
+paths:
+  /sessions:
+    get:
+      summary: List all sessions
+      operationId: hanoi.app.getSessions
+      tags:
+        - sessions
+      responses:
+        '200':
+          description: An array of sessions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Sessions"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      summary: Create a session
+      operationId: hanoi.app.createSession
+      tags:
+        - sessions
+      parameters:
+          # I would normally prefer to put this in the header, but
+          # it seems there is (still) a bug in the Swagger UI and it mangles
+          # parameter names (but not in the query string)
+          # https://github.com/zalando/connexion/issues/135
+        - in: query
+          name: numberOfDiscs
+          description: The number of discs in the game
+          required: false
+          schema:
+            type: integer
+            format: int8
+          # I would normally prefer to put this in the header, but
+          # it seems there is (still) a bug in the Swagger UI and it mangles
+          # parameter names (but not in the query string)
+          # https://github.com/zalando/connexion/issues/135
+        - in: query
+          name: fromTower
+          description: The tower from which discs should be moved
+          required: false
+          schema:
+            type: integer
+            format: int8
+          # I would normally prefer to put this in the header, but
+          # it seems there is (still) a bug in the Swagger UI and it mangles
+          # parameter names (but not in the query string)
+          # https://github.com/zalando/connexion/issues/135
+        - in: query
+          name: toTower
+          description: The tower to which discs should be moved
+          required: false
+          schema:
+            type: integer
+            format: int8
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                type: integer
+                format: int64
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /sessions/{sessionId}:
+    get:
+      summary: Info for a specific session
+      operationId: hanoi.app.getSession
+      tags:
+        - sessions
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          description: The id of the session to retrieve
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Session"
+        '201':
+          description: Null response
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /sessions/{sessionId}/move:
+    put:
+      summary: Move a disc
+      operationId: hanoi.app.move
+      tags:
+        - sessions
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          description: The id of the session for the move to make
+          schema:
+            type: integer
+            format: int64
+        - name: fromTower
+          # I would normally prefer to put this in the header, but
+          # it seems there is (still) a bug in the Swagger UI and it mangles
+          # parameter names (but not in the query string)
+          # https://github.com/zalando/connexion/issues/135
+          in: query
+          required: true
+          description: The tower from which a disc should be moved
+          schema:
+            type: integer
+            format: int8
+        - name: toTower
+          # I would normally prefer to put this in the header, but
+          # it seems there is (still) a bug in the Swagger UI and it mangles
+          # parameter names (but not in the query string)
+          # https://github.com/zalando/connexion/issues/135
+          in: query
+          required: true
+          description: The tower to which a disc should be moved
+          schema:
+            type: integer
+            format: int8
+      responses:
+        '200':
+          description: Expected response to a valid request
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /sessions/{sessionId}/complete:
+    get:
+      summary: Check if a session is complete
+      operationId: hanoi.app.isComplete
+      tags:
+        - sessions
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          description: The id of the session to retrieve
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                type: boolean
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+components:
+  schemas:
+    Session:
+      type: object
+      required:
+        - sessionId
+        - numberOfDiscs
+        - fromTower
+        - toTower
+        - numberOfMoves
+        - towers
+      properties:
+        sessionId:
+          type: integer
+          format: int64
+        numberOfDiscs:
+          type: integer
+          format: int8
+        fromTower:
+          type: integer
+          format: int8
+        toTower:
+          type: integer
+          format: int8
+        numberOfMoves:
+          type: integer
+          format: int64
+        towers:
+          type: array
+          items:
+            type: integer
+            format: int64
+    Sessions:
+      type: array
+      items:
+        $ref: "#/components/schemas/Session"
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
