@@ -34,7 +34,7 @@ can play given a suitable frontend (e.g. a web browser).
 
 ### Basic Requirements
 
-The requirements wer fairly minimal:
+The requirements were fairly minimal:
 * allow a client implementation (not in scope) to modify the state of the game
 * enforce the rules of the game
 * apply effects of any valid move to the game state
