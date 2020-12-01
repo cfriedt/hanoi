@@ -59,28 +59,28 @@ We assume that you are using a relatively recent version of Ubuntu Linux, Focal 
 start at step 1.
 
 1. [Install Docker Desktop](https://www.docker.com/get-started)
-1. Start up an Ubuntu Focal Fossa Docker container
+2. Start up an Ubuntu Focal Fossa Docker container
   ```bash
   docker run -it -p 8080:8080 ubuntu:focal
   ```
-1. Install [Git](https://git-scm.com/) and [Pip](https://pypi.org/project/pip/)
+3. Install [Git](https://git-scm.com/) and [Pip](https://pypi.org/project/pip/)
   ```bash
   apt-get update && apt install -y git python3-pip
   ```
-1. Clone the git repository
+4. Clone the git repository
   ```bash
   git clone https://github.com/cfriedt/hanoi.git
   cd hanoi
   ```
-1. Install any necessary Python runtime requirements
+5. Install any necessary Python runtime requirements
   ```bash
   pip3 install -r requirements.txt
   ```
-1. Run the server
+6. Run the server
   ```bash
   ./run.py
   ```
-1. Open a web browser to [http://localhost:8080/v1/ui](http://localhost:8080/v1/ui) to access the [Swagger UI](https://swagger.io/tools/swagger-ui/)
+7. Open a web browser to [http://localhost:8080/v1/ui](http://localhost:8080/v1/ui) to access the [Swagger UI](https://swagger.io/tools/swagger-ui/)
    in order to test out the backend.
 
 ## Try it Out
