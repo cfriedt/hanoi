@@ -36,5 +36,8 @@ jobs:
     - name: Test with pytest
       run: |
         export PYTHONPATH=$PWD/src
-        pytest --cov --cov-report term-missing tests/HanoiState_test.py tests/Hanoi_test.py
+        pytest --cov=hanoi --cov-report term-missing tests/HanoiState_test.py tests/Hanoi_test.py
+        # Currently there seems to be some kind of conflict running the app via GitHub Actions
+        # becuase the python requests library is not able to connect to the game engine on the
+        # default Flask port (5000).
         #pytest tests/app_test.py
