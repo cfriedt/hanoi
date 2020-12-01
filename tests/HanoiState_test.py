@@ -1,6 +1,6 @@
 # MIT License
 #
-# Copyright (c) 2018 Christopher Friedt
+# Copyright (c) 2020 Christopher Friedt
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import json
 import pytest
 
 from hanoi import HanoiState
@@ -69,3 +70,14 @@ def test_init_target_gt2():
 def test_init_source_eq_target():
     with pytest.raises(ValueError, match=r"source may not equal target"):
         h = HanoiState(1, 0, 0)
+
+
+def test_to_json():
+    h = HanoiState(4, 0, 2)
+    j = json.loads(h.to_json())
+    assert isinstance(j['sessionId'], int)
+    assert j['numberOfDiscs'] == 4
+    assert j['fromTower'] == 0
+    assert j['toTower'] == 2
+    assert j['numberOfMoves'] == 0
+    assert j['towers'] == [15, 0, 0]
