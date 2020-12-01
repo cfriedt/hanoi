@@ -73,9 +73,9 @@ For example, to create a new session click on the `POST /sessions Create a sessi
 
 ![Create a Session](https://github.com/cfriedt/hanoi/raw/main/doc/post-create-a-session.png "Create a Session")
 
-Then, click "Try it Out".
+Then, click `Try it out`.
 
-![Try it Out](https://github.com/cfriedt/hanoi/raw/main/doc/try-it-out.png "Try it Out")
+![Try it Out](https://github.com/cfriedt/hanoi/raw/main/doc/try-it-out.png "Try it out")
 
 Add the desired parameters - e.g. 4 discs, starting on tower 0 and finishing on tower 2. Then, click execute. The backend will respond with error
 messages for any invalid input.
@@ -107,7 +107,7 @@ tower 0 to tower 1? We know that it would violate the rules of the game, but can
 If the same instructions are followed to attempt to move a disc from tower 0 to tower 1, this time, a descriptive error message is returned with the
 error code 201 indicating that the HTTP PUT operation failed.
 
-![Move Error](https://github.com/cfriedt/hanoi/raw/main/doc/move-response.png "Move Error")
+![Move Error](https://github.com/cfriedt/hanoi/raw/main/doc/move-error.png "Move Error")
 
 ### Finish the Game!
 
@@ -118,17 +118,20 @@ MOVES=(0 2 1 2 0 1 2 0 2 1 0 1 0 2 1 2 1 0 2 0 1 2 0 1 0 2 1 2)
 for (( i=0; i < ${#MOVES[@]}; i += 2 )); do
 	FROM=${MOVES[$i]}
 	TO=${MOVES[$((i+1))]}
-	curl -X PUT "http://localhost:8080/v1/sessions/0/move?fromTower=${FROM}&toTower=${TO}" -H  "accept: application/json"
+	curl -X PUT "http://localhost:8080/v1/sessions/0/move?fromTower=${FROM}&toTower=${TO}" \
+		-H  "accept: application/json"
 done
 ```
 
-Finally, using the UI, expand the `GET /sessions/{sessionId}/complete` menu by clicking it, and selecting "Try it out". Enter our `sessionId`, 0, and select "Execute".
+Finally, using the UI, expand the `GET /sessions/{sessionId}/complete` menu by clicking it, and selecting `Try it out`. Enter our `sessionId`, 0, and select "Execute".
 
 ![Check Completion](https://github.com/cfriedt/hanoi/raw/main/doc/complete.png "Check Completion")
 
 The response should resemble the following.
 
 ![Complete](https://github.com/cfriedt/hanoi/raw/main/doc/victory.png "Complete")
+
+Yay! We're done! 🥳
 
 ## Running Tests with Pytest
 
@@ -235,3 +238,36 @@ a large (say 10^6) number of users would be challenging.
 While it's fine to use in-memory storage for 1, 2, or even 100 users, (when the number of discs is relatively low), supporting 10M users would likely
 require multiple instances of the game engine in place all over the world, with one or more load-balancers for each region. Furthermore, we would likely
 require a distributed database of some kind to store game information.
+
+To achieve a very large scale service, it would probably make sense to orchestrate the game engines, databases, load balancers, reverse proxies, and so
+on using [Kubernetes](https://kubernetes.io/).
+
+Also, when it comes to scale, there are a lot of ways to optimize things. For example, reimplementing the game engine in C++.
+
+### Create a Frontend
+
+There are many Javascript frontends out there. I am no Picasso when it comes to frontends. If you want some rectangles on an HTML5 `<canvas>` element
+though, I can hook you up, and even write the client-side JavaScript to communicate with the backend too! 😉
+
+A number of websites previously, and probably still use [jQuery](https://jquery.com/). However, now that the
+[JavaScript Fetch API](https://developers.google.com/web/updates/2015/03/introduction-to-fetch) is supported on most if not all major browsers,
+I tend to prefer to write my client-side JS with that. I've even stored my client-side JS a gziped resource on a microcontroller with an embedded HTTP
+server on it (which I also wrote).
+
+### Remote Procedure Calls
+
+While REST is great for prototyping web services, when we get to a certain scale, it makes more sense to use binary communication instead of string-based
+communication between various web services (and even the client!).
+
+With an HTTP2 proxy like [Envoy](https://www.envoyproxy.io/), binary [gRPC](https://grpc.io/) messages could be exchanged between nodes at any scale.
+Actually, I would be lying if I said I didn't implement this service first with gRPC. 😬
+
+While gRPC is nice, my personal preference for RPC frameworks is [Apache Thrift](https://thrift.apache.org). It's nice in that it is one tool in a single
+repository and that it uses the same client / server classes while abstracting away the actual transports. The only thing that Thrift is missing compared
+to gRPC is [bidirectional communication](https://grpc.io/docs/what-is-grpc/core-concepts/).
+
+## Conclusion
+
+Thanks for reading to the end.
+
+I hope you enjoyed learning about REST, the Towers of Hanoi, the OpenAPI standard, Connexion, and the other topics mentioned.
