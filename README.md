@@ -1,5 +1,25 @@
 # Towers of Hanoi Game Engine
 
+* [About](#about)
+  + [Build Status](#build-status)
+  + [Basic Requirements](#basic-requirements)
+  + [Implementation Details](#implementation-details)
+* [Step-by-Step Instructions for Running](#step-by-step-instructions-for-running)
+* [Try it Out](#try-it-out)
+  + [Create a Session](#create-a-session)
+  + [Move a Disc](#move-a-disc)
+  + [Try an Illegal Move](#try-an-illegal-move)
+  + [Finish the Game!](#finish-the-game-)
+* [Running Tests with Pytest](#running-tests-with-pytest)
+* [Additional Areas of Expansion](#additional-areas-of-expansion)
+  + [Next N Moves & Tips](#next-n-moves---tips)
+  + [Authentication & Encryption](#authentication---encryption)
+  + [Persistant Storage](#persistant-storage)
+  + [Scaling](#scaling)
+  + [Create a Frontend](#create-a-frontend)
+  + [Remote Procedure Calls](#remote-procedure-calls)
+* [Conclusion](#conclusion)
+
 ## About
 
 This is a sample backend REST API implementation for a game engine that allows users to play the
