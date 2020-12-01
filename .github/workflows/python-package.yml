@@ -36,4 +36,5 @@ jobs:
     - name: Test with pytest
       run: |
         export PYTHONPATH=$PWD/src
-        pytest --cov tests/
+        pytest --cov --cov-report term-missing tests/HanoiState_test.py tests/Hanoi_test.py
+        #pytest tests/app_test.py
